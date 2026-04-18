@@ -5,7 +5,11 @@ import LottieView from 'lottie-react-native';
 
 const splashSource = require('@/assets/animations/ifute-splash.json');
 
-const SPLASH_MAX_MS = 8000;
+/** Limite se `onAnimationFinish` não disparar (ex.: alguns devices). Manter baixo para não “travar” o app. */
+const SPLASH_MAX_MS = 3200;
+
+/** A animação original tem ~4s (120 frames @ 30fps); acelerar reduz tempo até a UI interativa. */
+const LOTTIE_SPEED = 2.25;
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -33,7 +37,7 @@ export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) 
     await SplashScreen.hideAsync();
   }, []);
 
-  const lottieSize = Math.min(windowW, windowH) * 0.92;
+  const lottieSize = Math.min(windowW, windowH) * 0.97;
 
   return (
     <View style={styles.root}>
@@ -48,6 +52,7 @@ export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) 
             source={splashSource}
             autoPlay
             loop={false}
+            speed={LOTTIE_SPEED}
             style={{ width: lottieSize, height: lottieSize }}
             onAnimationFinish={finish}
           />

@@ -4,6 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { AnimatedSplashOverlay } from '@/components/animated-splash-overlay';
+import { AuthRedirect } from '@/components/auth-redirect';
+import { AuthProvider } from '@/context/auth-context';
 import { ReservationsProvider } from '@/context/reservations-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -16,17 +18,21 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <ReservationsProvider>
-        <AnimatedSplashOverlay>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="arena-detail" options={{ headerShown: false, animation: 'slide_from_right' }} />
-            <Stack.Screen name="arena-booking" options={{ headerShown: false, animation: 'slide_from_right' }} />
-            <Stack.Screen name="arena-share-payment" options={{ headerShown: false, animation: 'slide_from_right' }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </Stack>
-        </AnimatedSplashOverlay>
-      </ReservationsProvider>
+      <AuthProvider>
+        <ReservationsProvider>
+          <AnimatedSplashOverlay>
+            <AuthRedirect />
+            <Stack>
+              <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="arena-detail" options={{ headerShown: false, animation: 'slide_from_right' }} />
+              <Stack.Screen name="arena-booking" options={{ headerShown: false, animation: 'slide_from_right' }} />
+              <Stack.Screen name="arena-share-payment" options={{ headerShown: false, animation: 'slide_from_right' }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            </Stack>
+          </AnimatedSplashOverlay>
+        </ReservationsProvider>
+      </AuthProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
