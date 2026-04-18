@@ -13,7 +13,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import * as Haptics from 'expo-haptics';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -74,6 +74,11 @@ export default function LoginScreen() {
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,
   });
+  const [fontWaitOver, setFontWaitOver] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setFontWaitOver(true), 5000);
+    return () => clearTimeout(id);
+  }, []);
 
   const onSubmit = useCallback(async () => {
     if (submitting) return;
@@ -92,7 +97,7 @@ export default function LoginScreen() {
     Alert.alert(title, 'Em breve no ArenaLink.');
   }, []);
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded && !fontWaitOver) {
     return (
       <View style={[styles.loadingRoot, { paddingTop: insets.top }]}>
         <StatusBar style="light" />

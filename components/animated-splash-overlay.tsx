@@ -1,94 +1,17 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
-import LottieView from 'lottie-react-native';
-
-const splashSource = require('@/assets/animations/ifute-splash.json');
-
-/** Limite se `onAnimationFinish` não disparar (ex.: alguns devices). Manter baixo para não “travar” o app. */
-const SPLASH_MAX_MS = 3200;
-
-/** A animação original tem ~4s (120 frames @ 30fps); acelerar reduz tempo até a UI interativa. */
-const LOTTIE_SPEED = 2.25;
-
-SplashScreen.preventAutoHideAsync().catch(() => {});
+import { type ReactNode } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 type AnimatedSplashOverlayProps = {
   children: ReactNode;
 };
 
+/** Contêiner raiz (flex). Não chamar `preventAutoHideAsync` aqui — evita splash presa no dev client/APK. */
 export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) {
-  const { width: windowW, height: windowH } = useWindowDimensions();
-  const [overlayVisible, setOverlayVisible] = useState(true);
-  const nativeHiddenRef = useRef(false);
-
-  const finish = useCallback(() => {
-    setOverlayVisible(false);
-  }, []);
-
-  useEffect(() => {
-    const id = setTimeout(finish, SPLASH_MAX_MS);
-    return () => clearTimeout(id);
-  }, [finish]);
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        if (!nativeHiddenRef.current) {
-          nativeHiddenRef.current = true;
-          await SplashScreen.hideAsync();
-        }
-      } catch {
-        // Evita splash nativa infinita se onLayout/Lottie falhar em release.
-      }
-      if (cancelled) return;
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const hideNativeWhenLottieReady = useCallback(async () => {
-    if (nativeHiddenRef.current) return;
-    nativeHiddenRef.current = true;
-    await SplashScreen.hideAsync();
-  }, []);
-
-  const lottieSize = Math.min(windowW, windowH) * 0.97;
-
-  return (
-    <View style={styles.root}>
-      {children}
-      {overlayVisible ? (
-        <View
-          style={styles.overlay}
-          onLayout={hideNativeWhenLottieReady}
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants">
-          <LottieView
-            source={splashSource}
-            autoPlay
-            loop={false}
-            speed={LOTTIE_SPEED}
-            style={{ width: lottieSize, height: lottieSize }}
-            onAnimationFinish={finish}
-          />
-        </View>
-      ) : null}
-    </View>
-  );
+  return <View style={styles.root}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1000,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
   },
 });
