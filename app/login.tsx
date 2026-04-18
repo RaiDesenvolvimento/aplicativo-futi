@@ -81,7 +81,7 @@ export default function LoginScreen() {
     try {
       void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       await signIn(email, password);
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/feed');
     } finally {
       setSubmitting(false);
     }

@@ -1,3 +1,4 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
@@ -8,7 +9,7 @@ import { ArenaLinkColors } from '@/constants/arena-link-theme';
 export default function TabLayout() {
   return (
     <Tabs
-      initialRouteName="explore"
+      initialRouteName="feed"
       screenOptions={{
         headerShown: false,
         tabBarButton: HapticTab,
@@ -23,6 +24,13 @@ export default function TabLayout() {
           fontWeight: '600',
         },
       }}>
+      <Tabs.Screen
+        name="feed"
+        options={{
+          title: 'Feed',
+          tabBarIcon: ({ color }) => <MaterialIcons name="newspaper" size={26} color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="explore"
         options={{

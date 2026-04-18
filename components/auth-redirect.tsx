@@ -14,7 +14,7 @@ export function AuthRedirect() {
     if (!session && !isLogin) {
       router.replace('/login');
     } else if (session && isLogin) {
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/feed');
     }
   }, [ready, session, pathname, router, navState?.key]);
 

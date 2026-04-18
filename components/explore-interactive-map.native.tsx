@@ -2,8 +2,8 @@ import { ArenaLinkColors } from '@/constants/arena-link-theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import MapView, { Marker, type Region } from 'react-native-maps';
+import { Platform, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
 
 export type VenuePin = {
   id: string;
@@ -101,6 +101,7 @@ export const ExploreInteractiveMap = forwardRef<ExploreMapRef, Props>(function E
     <View style={[styles.wrap, { height: mapHeight }]}>
       <MapView
         ref={mapRef}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         style={StyleSheet.absoluteFill}
         initialRegion={initial}
         rotateEnabled={false}

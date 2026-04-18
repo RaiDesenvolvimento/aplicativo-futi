@@ -31,6 +31,24 @@ export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) 
     return () => clearTimeout(id);
   }, [finish]);
 
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        if (!nativeHiddenRef.current) {
+          nativeHiddenRef.current = true;
+          await SplashScreen.hideAsync();
+        }
+      } catch {
+        // Evita splash nativa infinita se onLayout/Lottie falhar em release.
+      }
+      if (cancelled) return;
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const hideNativeWhenLottieReady = useCallback(async () => {
     if (nativeHiddenRef.current) return;
     nativeHiddenRef.current = true;

@@ -1,6 +1,6 @@
 import type { MapExtraMarker } from '@/components/location-map-types';
-import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, useColorScheme } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Platform, StyleSheet, useColorScheme } from 'react-native';
 
 type Props = {
   latitude: number;
@@ -31,6 +31,7 @@ export function LocationMap({
 
   return (
     <MapView
+      provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
       style={styles.map}
       initialRegion={{
         latitude,

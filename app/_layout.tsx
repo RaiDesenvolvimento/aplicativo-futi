@@ -9,8 +9,9 @@ import { AuthProvider } from '@/context/auth-context';
 import { ReservationsProvider } from '@/context/reservations-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+/** Abrir em login: evita montar MapView na Explore antes do auth (APK sem chave Maps quebrava o cold start). */
 export const unstable_settings = {
-  anchor: '(tabs)',
+  initialRouteName: 'login',
 };
 
 export default function RootLayout() {
