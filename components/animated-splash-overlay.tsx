@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import LottieView from 'lottie-react-native';
 
@@ -14,7 +14,7 @@ type AnimatedSplashOverlayProps = {
 };
 
 export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) {
-  const scheme = useColorScheme();
+  const { width: windowW, height: windowH } = useWindowDimensions();
   const [overlayVisible, setOverlayVisible] = useState(true);
   const nativeHiddenRef = useRef(false);
 
@@ -33,14 +33,14 @@ export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) 
     await SplashScreen.hideAsync();
   }, []);
 
-  const bg = scheme === 'dark' ? '#000000' : '#ffffff';
+  const lottieSize = Math.min(windowW, windowH) * 0.92;
 
   return (
     <View style={styles.root}>
       {children}
       {overlayVisible ? (
         <View
-          style={[styles.overlay, { backgroundColor: bg }]}
+          style={styles.overlay}
           onLayout={hideNativeWhenLottieReady}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants">
@@ -48,7 +48,7 @@ export function AnimatedSplashOverlay({ children }: AnimatedSplashOverlayProps) 
             source={splashSource}
             autoPlay
             loop={false}
-            style={styles.lottie}
+            style={{ width: lottieSize, height: lottieSize }}
             onAnimationFinish={finish}
           />
         </View>
@@ -66,10 +66,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  lottie: {
-    width: '72%',
-    maxWidth: 360,
-    aspectRatio: 1,
+    backgroundColor: '#ffffff',
   },
 });
